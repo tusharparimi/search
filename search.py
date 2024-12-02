@@ -104,7 +104,7 @@ class dfs_iterative_deepening(search):
                 self.display_grid(i)
                 print(f"frontier: {len(frontier)}\n", frontier)
                 print(f"reached: {len(reached)}\n", reached)
-            self.grid.grid[self.grid.grid == '.'] = self.grid.fill_value
+            self.grid.clear_paths()
             self.display_grid(i, sleep_at_the_end=1)
 
     def display_grid(self, i, sleep_at_the_end = 0):
@@ -162,17 +162,18 @@ if __name__ == "__main__":
     goal_idx = (0, 16)
     grid = grid(shape, goal_idx, fill_value, start_value, goal_value, start_idx)
     grid.add_random_obstacles(150)
-    
-    
-    # goal = bfs(grid).search_goal()
-    # print("goal index: ", goal)
+        
+    goal = bfs(grid).search_goal()
+    print("goal index: ", goal)
 
-    # goal = dfs(grid).search_goal()
-    # print("goal index: ", goal)
+    grid.clear_paths()
+    goal = dfs(grid).search_goal()
+    print("goal index: ", goal)
 
     # goal = dfs_iterative_deepening(grid).search_goal()
     # print("goal index: ", goal)
 
+    grid.clear_paths()
     goal = a_star(grid).search_goal()
     print("goal index: ", goal)
 
