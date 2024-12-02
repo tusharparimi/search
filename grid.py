@@ -3,7 +3,7 @@ import random
 
 class grid:
 
-    def __init__(self, shape, goal_idx, fill_value='-', start_value='s', goal_value='g', \
+    def __init__(self, shape, goal_idx, fill_value=' ', start_value='s', goal_value='g', \
                  start_idx=(0,0), obstacle_value='#', path_value='.'):
         self.shape = shape
         self.grid = np.full(shape, fill_value)
@@ -25,6 +25,9 @@ class grid:
             if (r, c) not in [self.start_idx, self._goal_idx]:
                 self.grid[r, c] = self.obstacle_value
                 i += 1
+
+    def clear_paths(self):
+        self.grid[self.grid == '.'] = self.fill_value
 
     def __repr__(self):
         res = "state :\n"
