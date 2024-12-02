@@ -1,7 +1,8 @@
 from grid import grid
 from collections import deque
+from queue import PriorityQueue
 import time
-from functions import clear_console, manhatten_distance
+from functions import clear_console, manhatten_distance, euclidean_distance
 
 class search:
     def __init__(self, grid):
@@ -45,7 +46,6 @@ class search:
         print(self.grid)
 
         
-
 class bfs(search):
     def search_goal(self):
         reached = []
@@ -115,6 +115,40 @@ class dfs_iterative_deepening(search):
         print(self.grid)
         time.sleep(sleep_at_the_end)
 
+class a_star(search):
+    def __init__(self, grid, path_cost = manhatten_distance, \
+                 goal_cost = manhatten_distance):
+        super().__init__(grid)
+        self.path_cost = path_cost
+        self.goal_cost = goal_cost
+
+    def search_goal(self):
+        reached = []
+        frontier = PriorityQueue()
+        frontier.put((self.goal_cost(self.grid.start_idx, self.grid._goal_idx), \
+                      self.grid.start_idx))
+        while not frontier.empty():
+            node = frontier.get()[1]
+            print(node)
+            if node in reached: continue
+            if self.is_goal(node): return node
+            for child in self.get_children(node):
+                if child not in reached:
+                    frontier.put((self.goal_cost(child, self.grid._goal_idx) + \
+                                  self.goal_cost(child, self.grid.start_idx), \
+                                    child))
+            self.fill_reached([node])
+            reached.append(node)
+            self.display_grid()
+            print(f"frontier: {frontier.qsize()}\n", frontier)
+            print(f"reached: {len(reached)}\n", reached)
+
+    def display_grid(self):
+        clear_console()
+        time.sleep(0.0001)
+        print(f"{type(self).__name__} searching... \
+        \nf = {self.path_cost.__name__}, g = {self.goal_cost.__name__}")
+        print(self.grid)
 
 
     
@@ -130,11 +164,17 @@ if __name__ == "__main__":
     grid.add_random_obstacles(150)
     
     
-    goal = bfs(grid).search_goal()
-    print("goal index: ", goal)
+    # goal = bfs(grid).search_goal()
+    # print("goal index: ", goal)
 
     # goal = dfs(grid).search_goal()
     # print("goal index: ", goal)
 
     # goal = dfs_iterative_deepening(grid).search_goal()
+    # print("goal index: ", goal)
+
+    goal = a_star(grid).search_goal()
+    print("goal index: ", goal)
+
+    # goal = a_star(grid, euclidean_distance, euclidean_distance).search_goal()
     # print("goal index: ", goal)
